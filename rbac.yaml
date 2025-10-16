@@ -1,0 +1,28 @@
+# 1. A Service Account for our application pod to use
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: task-runner-sa
+---
+# 2. A Role that defines the permissions we need
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-manager-role
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods", "pods/log"]
+  verbs: ["create", "get", "list", "watch", "delete"]
+---
+# 3. A RoleBinding that grants the permissions in the Role to the Service Account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-manager-binding
+subjects:
+- kind: ServiceAccount
+  name: task-runner-sa
+roleRef:
+  kind: Role
+  name: pod-manager-role
+  apiGroup: rbac.authorization.k8s.io

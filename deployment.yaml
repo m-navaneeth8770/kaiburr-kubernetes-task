@@ -1,0 +1,54 @@
+# --- Deployment Definition ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kaiburr-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kaiburr-app
+  template:
+    metadata:
+      labels:
+        app: kaiburr-app
+    spec:
+      # This new line tells the pod to use the Service Account we created.
+      # This gives it the permission to create other pods.
+      serviceAccountName: task-runner-sa
+      containers:
+      - name: kaiburr-app-container
+        # The image tag is updated to version 2.0
+        image: m-navaneeth8770/kaiburr-task-app:2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        # Define an environment variable for the username
+        - name: MONGO_ROOT_USER
+          value: "root"
+
+        # Define an environment variable for the password by reading it from the Kubernetes Secret
+        - name: MONGO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb
+              key: mongodb-root-password
+
+        # Build the final connection string using the variables defined above
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb://$(MONGO_ROOT_USER):$(MONGO_ROOT_PASSWORD)@mongodb:27017/kaiburr_assessment?authSource=admin"
+---
+# --- Service Definition ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kaiburr-app-service
+spec:
+  type: NodePort
+  selector:
+    app: kaiburr-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
