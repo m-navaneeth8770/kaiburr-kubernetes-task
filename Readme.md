@@ -99,14 +99,14 @@ The following screenshots provide definitive proof that all requirements for Tas
 ### 1. Successful Deployment Status
 This screenshot confirms that both the application and MongoDB pods are running successfully in the Kubernetes cluster.
 
-![Deployment Status](screenshots/screenshot-1-status.png)
+![Deployment Status](screenshots/1-status.png)
 
 ### 2. Live Pod Creation in Real-Time
 This is the core demonstration of the task's main requirement. The screenshot captures the `task-runner-...` pod being created in the terminal, triggered directly by the Postman API call.
 
-![Live Pod Creation](screenshots/screenshot-2-live-creation.png)
+![Live Pod Creation](screenshots/2-live-creation.png)
 
 ### 3. Final Result with Pod Output
 This screenshot shows the successful `200 OK` response from the execution endpoint. The response body includes the output captured from the ephemeral pod's logs, confirming the end-to-end workflow is complete.
 
-![Execution Result](screenshots/screenshot-3-final-result.png)
+![Execution Result](screenshots/3-final-result.png)
